@@ -1,0 +1,7 @@
+What additional properties did you add to your models and why?
+For the User model, I add "performance" in order to rank users by this property.
+For the Game model, I add "current" and "moves" to show the current game status and game history.
+
+
+What were some of the trade-offs or struggles you faced when implementing the new game logic?
+I have to implement the game logic in api although I should do it in another file.
