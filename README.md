@@ -1,4 +1,3 @@
-# app-engine-app
 #Full Stack Nanodegree Project 4
 
 ## Set-Up Instructions:
@@ -34,11 +33,10 @@ The word to guess is represented by a row of stars, representing each letter of 
  - **new_game**
     - Path: 'game'
     - Method: POST
-    - Parameters: user_name, min, max, attempts
+    - Parameters: user_name, attempts(maximum is 14)
     - Returns: GameForm with initial game state.
     - Description: Creates a new Game. user_name provided must correspond to an
-    existing user - will raise a NotFoundException if not. Min must be less than
-    max. Also adds a task to a task queue to update the average moves remaining
+    existing user - will raise a NotFoundException if not.  Also adds a task to a task queue to update the average moves remaining
     for active games.
      
  - **get_game**

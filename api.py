@@ -120,16 +120,16 @@ class HangManApi(remote.Service):
 
     @endpoints.method(request_message=GET_GAME_REQUEST,
                       response_message=StringMessage,
-                      path='game/delete/{urlsafe_game_key}',
-                      name='delete_game',
+                      path='game/cancel/{urlsafe_game_key}',
+                      name='cancel_game',
                       http_method='POST')
-    def delete_game(self, request):
-        """delete the current game state."""
+    def cancel_game(self, request):
+        """cancel the current game state."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game:
           if not game.game_over:
                 game.key.delete()
-                return StringMessage(message='Game deleted!')
+                return StringMessage(message='Game canceled!')
           else:
             raise endpoints.BadRequestException('Game already over!')
         else:

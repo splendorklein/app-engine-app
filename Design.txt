@@ -5,3 +5,7 @@ For the Game model, I add "current" and "moves" to show the current game status 
 
 What were some of the trade-offs or struggles you faced when implementing the new game logic?
 I have to implement the game logic in api although I should do it in another file.
+
+Hangman is a paper and pencil guessing game. The player tries to guess a word, phrase or sentence by suggesting letters or numbers, within a certain number of guesses. This app is a simple implementation of Hangman.
+The word to guess is represented by a row of stars, representing each letter of the word. If the player suggests a letter which occurs in the word, the app reveals it in all its correct positions. If the suggested letter or number does not occur in the word, the player loses one attempt.
+During the design of the API, there was not too much difficulty. Just sometimes there was syntax error and I had to go back to the code and correct it. That's it.
