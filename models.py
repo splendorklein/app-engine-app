@@ -82,8 +82,12 @@ class Game(ndb.Model):
         self.game_over = True
         self.put()
         # Add the game to the score 'board'
+        if won:
+            points = len(self.target) + 14 - self.attempts_remaining
+        else:
+            points = 0
         score = Score(user=self.user, date=date.today(), won=won,
-                      score=(len(self.target) + 14 - self.attempts_remaining))
+                      score=points)
                       
         score.put()
 

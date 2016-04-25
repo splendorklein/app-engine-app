@@ -30,7 +30,7 @@ SCORE_REQUEST = endpoints.ResourceContainer(
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
 
-wordlistlen = len(wordlist)
+
 
 @endpoints.api(name='hangman', version='v1')
 class HangManApi(remote.Service):
@@ -54,6 +54,7 @@ class HangManApi(remote.Service):
 
     def pickaWord(self):
         """pick a word from the list for the game """
+        wordlistlen = len(wordlist)
         targetnum=random.choice(range(0, wordlistlen))
         a = wordlist[targetnum]
         b = ""
@@ -68,8 +69,9 @@ class HangManApi(remote.Service):
                       http_method='POST')
     def new_game(self, request):
         """Creates new game"""
-        if request.attempts > 14:
-          raise endpoints.BadRequestException('At most 14 attempts!')
+        if 1 > request.attempts or request.attempts > 14:
+          raise endpoints.BadRequestException('Attempts should not be less than 1 or '
+            'greater than 14!')
         user = User.query(User.name == request.user_name).get()
         if not user:
             raise endpoints.NotFoundException(
@@ -98,7 +100,10 @@ class HangManApi(remote.Service):
         """Return the current game state."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game:
-            return game.to_form('Time to make a move!')
+            if game.game_over:
+              return game.to_form('The game is over!')
+            else:
+              return game.to_form('Time to make a move!')
         else:
             raise endpoints.NotFoundException('Game not found!')
 
@@ -146,7 +151,7 @@ class HangManApi(remote.Service):
         if not user:
             raise endpoints.NotFoundException(
                     'A User with that name does not exist!')
-        games = Game.query(Game.user == user.key)
+        games = Game.query(Game.user == user.key, Game.game_over == False)
         return GameForms(games=[game.to_form("") for game in games])
 
     @endpoints.method(response_message=UserForms,
@@ -187,22 +192,30 @@ class HangManApi(remote.Service):
         if game.game_over:
             return game.to_form('Game already over!')
 
+        
+        
+        if len(request.guess) != 1 and len(request.guess) != len(game.target):
+            raise endpoints.BadRequestException('Only one letter or the'
+            ' whole word each guess!')
         game.attempts_remaining -= 1
         
-        if len(request.guess) != 1:
-            raise endpoints.BadRequestException('Only one letter each guess!')
-
-        targettem = list(game.target)
-        currenttem = list(game.current)
         guessresult = False
-        for i in range(len(targettem)):
-            if targettem[i] == request.guess.lower():
-                currenttem[i] = request.guess.lower()
-                guessresult = True
-        newcurrent = ""
-        for l in currenttem:
-            newcurrent += l
+        if len(request.guess) == len(game.target):
+          if request.guess.lower() == game.target:
+            guessresult = True
+            newcurrent = request.guess.lower()
+        else:
+          targettem = list(game.target)
+          currenttem = list(game.current)
+          for i in range(len(targettem)):
+              if targettem[i] == request.guess.lower():
+                  currenttem[i] = request.guess.lower()
+                  guessresult = True
+          newcurrent = ""
+          for l in currenttem:
+              newcurrent += l
 
+        
         game.current = newcurrent
         game.put()
 

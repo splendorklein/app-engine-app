@@ -13,6 +13,17 @@
 Hangman is a paper and pencil guessing game. The player tries to guess a word, phrase or sentence by suggesting letters or numbers, within a certain number of guesses. This app is a simple implementation of Hangman.
 The word to guess is represented by a row of stars, representing each letter of the word. If the player suggests a letter which occurs in the word, the app reveals it in all its correct positions. If the suggested letter or number does not occur in the word, the player loses one attempt.
 
+##Score Keeping:
+Your score = 14 + the length of the word - attempts remainning
+Which means allowing yourself with less attempts when start a new game enables you to 
+get a higher score.
+
+##How to play:
+ - Create a new user, using the create_user endpoint. Remember to copy the urlsafe_key   
+   property.
+ - Use create_game to create a game.
+ - Use make_move to make a guess. You can quess one letter or the whole word each time.
+
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
  - app.yaml: App configuration.
@@ -76,8 +87,8 @@ The word to guess is represented by a row of stars, representing each letter of 
     - Returns: GameForms. 
     - Description: Returns all of a User's active games.
 
- - **delete_game**
-    - Path: 'game/delete/{urlsafe_game_key}'
+ - **cancel_game**
+    - Path: 'game/cancel/{urlsafe_game_key}'
     - Method: POST
     - Parameters: urlsafe_game_key
     - Returns: StringMessage. 

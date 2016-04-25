@@ -18,13 +18,15 @@ class SendReminderEmail(webapp2.RequestHandler):
         app_id = app_identity.get_application_id()
         users = User.query(User.email != None)
         for user in users:
-            games = Game.query(Game.user == user.key)
-            for game in games:
-                if not game.game_over:
+            games = Game.query(Game.user == user.key).filter(Game.game_over == False).fetch()
+            if games:
+                
                     subject = 'This is a reminder!'
-                    body = 'Hello {}, try out Hangman!'.format(user.name)
+                    body = 'Hello {}, try out Hangman! '.format(user.name)
                     # This will send test emails, the arguments to send_mail are:
                     # from, to, subject, body
+                    for game in games:
+                        body += 'Your game: {} is not finished. '.format(game.current)
                     mail.send_mail('noreply@{}.appspotmail.com'.format(app_id),
                                    user.email,
                                    subject,
